@@ -3,10 +3,8 @@ native.setProperty( "windowTitleText", "Particles by Hetsen" )
 _W = display.contentWidth
 _H = display.contentHeight
 
-local physics	= require( "physics" )
-local json 		= require ("json")
-
-
+local physics = require( "physics" )
+local json = require ("json")
 
 function jsonLoad(fileName, dir)
 	local path = system.pathForFile(fileName, dir or system.DocumentsDirectory)
@@ -23,13 +21,13 @@ config = jsonLoad("config.cfg", system.ResourceDirectory)
 if config == nil then
 	config =
 	{
-		["volumeUp"] 		= "n",
-		["volumeDown"] 		= "m",
-		["pauseStars"] 		= "u",
-		["trailtimeUp"] 	= "i",
-		["trailtimeDown"] 	= "o",
-		["music"] 			= "b",
-		["debug"] 			= "false"
+		["volumeUp"] = "n",
+		["volumeDown"] = "m",
+		["pauseStars"] = "u",
+		["trailtimeUp"] = "i",
+		["trailtimeDown"] = "o",
+		["music"] = "b",
+		["debug"] = "false"
 	}
 end
 
@@ -37,14 +35,14 @@ physics.isStarted = false
 
 
 -- [[ Variables ]] --
-gravity 				= 1
-timerCount 				= 0
-trailTime 				= 300
-starfieldTimerPaused	= false
-gameRunning				= true
-volume 					= .3
-musicOn 				= true
-level 					= 0
+gravity = 1
+timerCount = 0
+trailTime = 300
+starfieldTimerPaused = false
+gameRunning = true
+volume = .3
+musicOn = true
+level = 0
 
 -- [[ Load sfx]] --
 
@@ -58,42 +56,47 @@ audio.setVolume(volume)
 
 -- [[ Various texts and images ]] --
 
-holderField 							= display.newImage("graphics/holderfield_new2.png",0,0)
-holderField.x, holderField.y 			= _W*.5, _H*.5
-holderField.alpha 						= .2
-holderField.xScale, holderField.yScale	= .8,.8
+holderField = display.newImage("graphics/holderfield_new.png",0,0)
+holderField.x, holderField.y = _W*.5, _H*.5
+holderField.alpha = .2
+holderField.xScale, holderField.yScale = .8,.8
 
 
 startTextGroup = display.newGroup()
 
-coverBack 					= display.newRect(0,0,_W,_H)
-coverBack.x, coverBack.y 	= _W*.5, _H*.5
-coverBack.alpha 			= 0
+coverBack = display.newRect(0,0,_W,_H)
+coverBack.x, coverBack.y = _W*.5, _H*.5
+coverBack.alpha = 0
 coverBack:toFront()
 
 display.setDefault( "background", 0, 0, .06 )
 
-timerImage 					= display.newImage("graphics/pointCounter.png",0,0)
-timerImage.x, timerImage.y 	= _W*.47, 25
+startTextRect = display.newRoundedRect(startTextGroup,0,0,1100,500,9)
+startTextRect:setFillColor(0.2,0.2,0.2,.2)
+startTextRect.alpha = 0
+startTextRect.x, startTextRect.y = _W*.5, _H*.55
 
-timerText 					= display.newText("0",0,0,"amiga4ever.ttf",24)
-timerText.anchorX 			= 0
-timerText.x, timerText.y 	= timerImage.x+timerImage.width*.57, 28
+timerImage = display.newImage("graphics/pointCounter.png",0,0)
+timerImage.x, timerImage.y = _W*.47, 25
 
-
-pressScreenText 						= display.newImage(startTextGroup,"graphics/startText.png",0,0)
-pressScreenText.x, pressScreenText.y 	= _W*.5, _H*.3
-
-
-infoScreentext 									= display.newImage(startTextGroup,"graphics/configField.png",0,0)
-infoScreentext.xScale, infoScreentext.yScale 	= .7,.7
-infoScreentext.x, infoScreentext.y 				= pressScreenText.x-200, pressScreenText.y + pressScreenText.height+200
+timerText = display.newText("0",0,0,"amiga4ever.ttf",24)
+timerText.anchorX = 0
+timerText.x, timerText.y = timerImage.x+timerImage.width*.57, 28
 
 
+pressScreenText = display.newImage(startTextGroup,"graphics/startText.png",0,0)
+pressScreenText.x, pressScreenText.y = _W*.5, _H*.3
 
-secondInfoText 									= display.newImage(startTextGroup,"graphics/howtoplayField.png",0,0)
-secondInfoText.xScale, secondInfoText.yScale 	= .7,.7
-secondInfoText.x, secondInfoText.y 				= infoScreentext.x+500, infoScreentext.y+15
+
+infoScreentext = display.newImage(startTextGroup,"graphics/configField.png",0,0)
+infoScreentext.xScale, infoScreentext.yScale = .7,.7
+infoScreentext.x, infoScreentext.y = pressScreenText.x-200, pressScreenText.y + pressScreenText.height+200
+
+
+
+secondInfoText = display.newImage(startTextGroup,"graphics/howtoplayField.png",0,0)
+secondInfoText.xScale, secondInfoText.yScale = .7,.7
+secondInfoText.x, secondInfoText.y = infoScreentext.x+500, infoScreentext.y+15
 startTextGroup:toFront()
 
 --[[
@@ -126,8 +129,8 @@ end
 
 -- [[ Score counter ]] --
 function counter()
-	timerCount 		= timerCount+1
-	timerText.text 	= timerCount
+	timerCount = timerCount+1
+	timerText.text = timerCount
 end
 
 
@@ -143,26 +146,25 @@ function resetAll()
 	timer.cancel( gravityTimer )
 	timer.cancel( scoreTimer )
 	timer.cancel( particleTimer )
-	gravityTimer	= nil
-	scoreTimer 		= nil
-	particleTimer	= nil
-	gameRunning 	= true
+	gravityTimer = nil
+	scoreTimer = nil
+	particleTimer = nil
+	gameRunning = true
 
 	display.remove(moveMe)
 
 	physics.pause()
 	physics.isStarted = false
 	
-
-	gravity 	= 1
-	timerCount 	= 0 
+	gravity = 1
+	timerCount = 0 
 	
 	particle.gravityScale = gravity
 
 	transition.to(pressScreenText, {time=150, alpha=1})
 
-	infoScreentext.alpha 	= 0
-	secondInfoText.x 		= _W*.5
+	infoScreentext.alpha = 0
+	secondInfoText.x = _W*.5
 
 	timer.performWithDelay(4000,function()
 		Runtime:addEventListener( "tap", startGame)
@@ -198,15 +200,12 @@ if "began" == phase then
 
     t.isFocus = true
 
-    android = true
-
     t.x0 = event.x - t.x
-	t.y0 = event.y - t.y
-    
+    t.y0 = event.y - t.y
 elseif t.isFocus then
     if "moved" == phase then
         t.x = event.x - t.x0
-        t.y = event.y - t.y0 
+        t.y = event.y - t.y0
         if level == 1 then
         	if moveMe.x <= 485 or moveMe.x >= 795 or moveMe.y >= 600 or moveMe.y <= 120 then
         		resetAll()
@@ -252,12 +251,12 @@ function startGame()
 		gameRunning = true
 		gameStarted()
 
-		moveMe.myName 		= "moveMe"
-		moveMe.x, moveMe.y 	= _W*.5, _H*.5
+		moveMe.myName = "moveMe"
+		moveMe.x, moveMe.y = _W*.5, _H*.5
 
 		physics.addBody(moveMe,{radius=5})
-		moveMe.bodyType 	= "kinematic"
-		moveMe.collision 	= onLocalCollision
+		moveMe.bodyType = "kinematic"
+		moveMe.collision = onLocalCollision
 		moveMe:addEventListener( "collision" )
 	end
 	Runtime:removeEventListener( "tap", startGame)
@@ -277,29 +276,29 @@ function gameStarted()
 		-- [[ Creates the falling enemies ]] --
 		function particles()
 			--particle = display.newRect(0,0,10,10)
-			particle 							= display.newImage(fallList[math.random(1,5)],0,0)
-			particle.xScale, particle.yScale 	= 1, 1
-			particle.x, particle.y 				= math.random(0,_W), -40
-			particle.myName 					= "particle"
+			particle = display.newImage(fallList[math.random(1,5)],0,0)
+			particle.xScale, particle.yScale = 1, 1
+			particle.x, particle.y = math.random(0,_W), -40
+			particle.myName = "particle"
 			particle:toBack()
-			randomRed 							= math.random(0,1)/.75
-			randomGreen 						= math.random(0,1)/.35
-			randomBlue 							= math.random(0,1)/.15
-			colorIt 							= math.random(0,1)
+			randomRed = math.random(0,1)/.75
+			randomGreen = math.random(0,1)/.35
+			randomBlue = math.random(0,1)/.15
+			colorIt = math.random(0,1)
 			
 			if randomRed == 0 and randomGreen == 0 and randomBlue == 0 then
 				-- do nothing
 			else
 				if colorIt == 1 then
-					particle:setFillColor(randomRed, randomGreen, randomBlue, .9)
+					particle:setFillColor(randomRed, randomGreen, randomBlue, .5)
 				end
 				--
 			end
 			--table.insert(particleList, particle)
 			physics.addBody(particle, {radius=6})
-			moveMe.bodyType 		= "static"
-			particle.gravityScale 	= gravity
-			particle.collision 		= onLocalCollision
+			moveMe.bodyType = "static"
+			particle.gravityScale = gravity
+			particle.collision = onLocalCollision
 			particle:addEventListener( "collision" )
 			transition.to(particle,{time=4000, xScale=.5, yScale=.5, rotation=math.random(-1080,1080), onComplete=function(e)
 				display.remove(e)
@@ -307,8 +306,8 @@ function gameStarted()
 			end})
 		end
 		if gameRunning == true then
-			gameRunning 	= false
-			particleTimer 	= timer.performWithDelay(10, particles, -1)
+			gameRunning = false
+			particleTimer = timer.performWithDelay(10, particles, -1)
 		end
 end
 
@@ -412,12 +411,12 @@ function starField(e)
 
 		starTrans = transition.to(brick,{time=500,x=display.contentWidth*.5,y=display.contentHeight*.5,xScale=smaller,yScale=smaller,alpha=0,onComplete=function(e)
 			display.remove(e)
-			x 		= nil
-			y 		= nil
-			size 	= nil
+			x = nil
+			y = nil
+			size = nil
 			smaller = nil
 			e:removeSelf()
-			e 		= nil
+			e = nil
 		end})
 	end
 end
@@ -431,17 +430,17 @@ if config.debug == nil then
 else
 	if config.debug == "true" then
 
-		memoryText 						= display.newText("",0,0,native.systemFont,24)
-		memoryText.x, memoryText.y 		= _W*.3, _H*.3
+		memoryText = display.newText("",0,0,native.systemFont,24)
+		memoryText.x, memoryText.y = _W*.3, _H*.3
 
-		memoryText2 					= display.newText("",0,0,native.systemFont,24)
-		memoryText2.x, memoryText2.y 	= _W*.3, _H*.4
+		memoryText2 = display.newText("",0,0,native.systemFont,24)
+		memoryText2.x, memoryText2.y = _W*.3, _H*.4
 
 		local printMemUsage = function()  
-		    local memUsed 		= (collectgarbage("count"))
-		    local texUsed 		= system.getInfo( "textureMemoryUsed" ) / 1048576 -- Reported in Bytes
-		    memoryText2.text 	= "System Memory: "..memUsed
-		    memoryText.text 	= "Texture Memory: "..texUsed
+		    local memUsed = (collectgarbage("count"))
+		    local texUsed = system.getInfo( "textureMemoryUsed" ) / 1048576 -- Reported in Bytes
+		    memoryText2.text = "System Memory: "..memUsed
+		    memoryText.text = "Texture Memory: "..texUsed
 		end
 			timer.performWithDelay(500,printMemUsage,-1)
 
